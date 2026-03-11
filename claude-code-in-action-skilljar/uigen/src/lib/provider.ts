@@ -203,8 +203,10 @@ const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    subject: '',
     message: ''
   });
+  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -216,45 +218,81 @@ const ContactForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    // Handle form submission here
+    setSubmitted(true);
   };
 
+  if (submitted) {
+    return (
+      <div className="max-w-lg mx-auto p-10 bg-white rounded-2xl shadow-lg text-center">
+        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-semibold text-slate-800 mb-2">Message Sent!</h3>
+        <p className="text-slate-500">Thanks for reaching out. We'll get back to you within 24 hours.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6">Contact Us</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-lg mx-auto p-8 bg-white rounded-2xl shadow-lg">
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-slate-800">Get in Touch</h2>
+        <p className="text-slate-500 mt-1">We'd love to hear from you. Fill out the form below and we'll respond promptly.</p>
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1.5">
+              Full Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              placeholder="Jane Smith"
+              className="w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400"
+            />
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1.5">
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              placeholder="jane@example.com"
+              className="w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400"
+            />
+          </div>
+        </div>
+
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-            Name
+          <label htmlFor="subject" className="block text-sm font-medium text-slate-700 mb-1.5">
+            Subject
           </label>
           <input
             type="text"
-            id="name"
-            name="name"
-            value={formData.name}
+            id="subject"
+            name="subject"
+            value={formData.subject}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="How can we help?"
+            className="w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400"
           />
         </div>
-        
+
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        
-        <div>
-          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-1.5">
             Message
           </label>
           <textarea
@@ -264,16 +302,18 @@ const ContactForm = () => {
             onChange={handleChange}
             required
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Tell us more about your project or question..."
+            className="w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none placeholder:text-slate-400"
           />
         </div>
-        
+
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
+          className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-indigo-700 active:bg-indigo-800 transition-all shadow-sm hover:shadow-md"
         >
           Send Message
         </button>
+        <p className="text-xs text-slate-400 text-center">We typically respond within 1-2 business days.</p>
       </form>
     </div>
   );
@@ -284,26 +324,34 @@ export default ContactForm;`;
       case "card":
         return `import React from 'react';
 
-const Card = ({ 
-  title = "Welcome to Our Service", 
-  description = "Discover amazing features and capabilities that will transform your experience.",
-  imageUrl,
-  actions 
+const Card = ({
+  title,
+  description,
+  icon,
+  tags = [],
+  actions
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      {imageUrl && (
-        <img 
-          src={imageUrl} 
-          alt={title}
-          className="w-full h-48 object-cover"
-        />
-      )}
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-all duration-300 group">
       <div className="p-6">
-        <h3 className="text-xl font-semibold mb-2">{title}</h3>
-        <p className="text-gray-600 mb-4">{description}</p>
+        {icon && (
+          <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-indigo-100 transition-colors">
+            {icon}
+          </div>
+        )}
+        <h3 className="text-lg font-semibold text-slate-800 mb-2">{title}</h3>
+        <p className="text-slate-500 text-sm leading-relaxed mb-4">{description}</p>
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            {tags.map((tag, i) => (
+              <span key={i} className="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-medium rounded-full">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
         {actions && (
-          <div className="mt-4">
+          <div className="pt-2 border-t border-slate-100 mt-4">
             {actions}
           </div>
         )}
@@ -320,40 +368,32 @@ export default Card;`;
 const Counter = () => {
   const [count, setCount] = useState(0);
 
-  const increment = () => {
-    setCount(count + 1);
-  };
-
-  const decrement = () => {
-    setCount(count - 1);
-  };
-
-  const reset = () => {
-    setCount(0);
-  };
-
   return (
-    <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Counter</h2>
-      <div className="text-4xl font-bold mb-6">{count}</div>
-      <div className="flex gap-4">
-        <button 
-          onClick={decrement}
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+    <div className="flex flex-col items-center p-10 bg-white rounded-2xl shadow-lg max-w-sm mx-auto">
+      <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-6">Counter</h2>
+      <div className="relative mb-8">
+        <div className="w-32 h-32 rounded-full bg-gradient-to-br from-indigo-50 to-violet-100 flex items-center justify-center">
+          <span className="text-5xl font-bold text-indigo-600">{count}</span>
+        </div>
+      </div>
+      <div className="flex items-center gap-3 w-full">
+        <button
+          onClick={() => setCount(c => c - 1)}
+          className="flex-1 px-5 py-3 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 active:bg-slate-300 transition-all"
         >
-          Decrease
+          − 1
         </button>
-        <button 
-          onClick={reset}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+        <button
+          onClick={() => setCount(0)}
+          className="px-4 py-3 border border-slate-200 text-slate-400 rounded-xl text-sm font-medium hover:bg-slate-50 hover:text-slate-600 transition-all"
         >
           Reset
         </button>
-        <button 
-          onClick={increment}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+        <button
+          onClick={() => setCount(c => c + 1)}
+          className="flex-1 px-5 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 active:bg-indigo-800 transition-all shadow-sm hover:shadow-md"
         >
-          Increase
+          + 1
         </button>
       </div>
     </div>
@@ -369,20 +409,20 @@ export default Counter;`;
       case "form":
         return "    console.log('Form submitted:', formData);";
       case "card":
-        return '      <div className="p-6">';
+        return '        <h3 className="text-lg font-semibold text-slate-800 mb-2">{title}</h3>';
       default:
-        return "  const increment = () => setCount(count + 1);";
+        return '      <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-6">Counter</h2>';
     }
   }
 
   private getNewStringForReplace(componentType: string): string {
     switch (componentType) {
       case "form":
-        return "    console.log('Form submitted:', formData);\n    alert('Thank you! We\\'ll get back to you soon.');";
+        return "    console.log('Form submitted:', formData);\n    setSubmitted(true);";
       case "card":
-        return '      <div className="p-6 hover:bg-gray-50 transition-colors">';
+        return '        <h3 className="text-lg font-semibold text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors">{title}</h3>';
       default:
-        return "  const increment = () => setCount(prev => prev + 1);";
+        return '      <h2 className="text-sm font-semibold uppercase tracking-wider text-indigo-400 mb-6">Counter</h2>';
     }
   }
 
@@ -390,19 +430,58 @@ export default Counter;`;
     if (componentName === "Card") {
       return `import Card from '@/components/Card';
 
+const features = [
+  {
+    title: "Lightning Fast Builds",
+    description: "Compile and deploy in seconds with our optimized build pipeline. No more waiting around.",
+    tags: ["Performance", "DevOps"],
+    iconColor: "text-indigo-600",
+    iconPath: "M13 10V3L4 14h7v7l9-11h-7z",
+  },
+  {
+    title: "End-to-End Encryption",
+    description: "Your data is encrypted at rest and in transit. Zero-knowledge architecture keeps you safe.",
+    tags: ["Security", "Privacy"],
+    iconColor: "text-emerald-600",
+    iconPath: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z",
+  },
+  {
+    title: "Team Collaboration",
+    description: "Real-time editing, comments, and version history. Work together seamlessly from anywhere.",
+    tags: ["Collaboration", "Remote"],
+    iconColor: "text-violet-600",
+    iconPath: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z",
+  },
+];
+
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8">
-      <div className="w-full max-w-md">
-        <Card 
-          title="Amazing Product"
-          description="This is a fantastic product that will change your life. Experience the difference today!"
-          actions={
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
-              Learn More
-            </button>
-          }
-        />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-10">
+          <h1 className="text-3xl font-bold text-slate-800 mb-2">Everything you need to ship faster</h1>
+          <p className="text-slate-500 max-w-xl mx-auto">Powerful features designed for modern development teams.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {features.map((feature, i) => (
+            <Card
+              key={i}
+              title={feature.title}
+              description={feature.description}
+              tags={feature.tags}
+              icon={
+                <svg className={"w-6 h-6 " + feature.iconColor} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={feature.iconPath} />
+                </svg>
+              }
+              actions={
+                <button className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors">
+                  Learn more →
+                </button>
+              }
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -413,10 +492,8 @@ export default function App() {
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8">
-      <div className="w-full max-w-md">
-        <${componentName} />
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-8">
+      <${componentName} />
     </div>
   );
 }`;
