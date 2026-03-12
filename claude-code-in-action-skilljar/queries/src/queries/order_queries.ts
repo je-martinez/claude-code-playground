@@ -107,25 +107,33 @@ export async function fetchCustomerOrders(
   return rows;
 }
 
-export async function getPendingOrders(db: Database): Promise<any[]> {
+export async function getPendingOrders(
+  db: Database,
+  minDaysPending?: number,
+): Promise<any[]> {
+  const daysFilter =
+    minDaysPending != null
+      ? `AND julianday('now') - julianday(o.created_at) > ${Number(minDaysPending)}`
+      : "";
+
   const query = `
-    SELECT 
-        o.order_id,
-        o.order_date,
+    SELECT
+        o.id as order_id,
+        o.order_number,
+        o.created_at,
         o.total_amount,
         c.first_name || ' ' || c.last_name as customer_name,
         c.phone,
-        julianday('now') - julianday(o.order_date) as days_since_created
+        julianday('now') - julianday(o.created_at) as days_pending
     FROM orders o
-    JOIN customers c ON o.customer_id = c.customer_id
+    JOIN customers c ON o.customer_id = c.id
     WHERE o.status = 'pending'
-    ORDER BY o.order_date
+    ${daysFilter}
+    ORDER BY o.created_at
     `;
 
-  const rows = await db.all(query, []);
-  return rows;
+  return await db.all(query);
 }
-
 export async function findOrdersByStatus(
   db: Database,
   status: string
